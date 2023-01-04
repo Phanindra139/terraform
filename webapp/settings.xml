@@ -1,0 +1,20 @@
+<settings>
+  <servers>
+    <server>
+      <id>s3-repository</id>
+      <username>AKIARHQSCBLOGOOHTM6U</username>
+      <password>D0mA/7St3HhIMv5az0Uu9kxq5sXY+uiEPDoWBYxX</password>
+    </server>
+  </servers>
+  <profiles>
+    <profile>
+      <id>s3-repository</id>
+      <activation>
+        <activeByDefault>true</activeByDefault>
+      </activation>
+      <properties>
+        <altDeploymentRepository>s3-repository::default::s3://bms-warfile</altDeploymentRepository>
+      </properties>
+    </profile>
+  </profiles>
+</settings>

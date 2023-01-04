@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+    commands:
+      - yum update -y
+      - yum install -y jq
+      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-3.3.0.1492-linux.zip
+      - unzip ./sonar-scanner-cli-3.3.0.1492-linux.zip
+      - export PATH=$PATH:./sonar-scanner-3.3.0.1492-linux/bin/
+
+  pre_build:
+    commands:
+      - pip3 install awscli --upgrade --user
+      - sonar-scanner -Dsonar.projectKey=test -Dsonar.host.url=http://13.232.145.192:9000/ -Dsonar.login=11c17acedaddefd353c2ab3fde31b36017d104f7 -Dsonar.scm.disabled=true
+      - sleep 5
+      - curl http://13.232.145.192:9000/api/qualitygates/project_status?projectKey=test > analysis.json
+      - cat analysis.json
+      - mvn sonar:sonar -X -Dsonar.projectKey=test -Dsonar.host.url=http://13.232.145.192:9000/ -Dsonar.login=11c17acedaddefd353c2ab3fde31b36017d104f7
+
+  build:
+    commands:
+      - export CODEARTIFACT_TOKEN=`aws codeartifact get-authorization-token --domain ${CODEARTIFACT_DOMAIN} --query authorizationToken --output text`
+      - mvn -s settings.xml clean package deploy
+      - echo Building Project
+      - echo Finished Buil
